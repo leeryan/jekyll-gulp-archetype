@@ -1,7 +1,7 @@
 var gulp = require ('gulp'),
 
   /** Utils **/
-  requiredir = require('requiredir'),
+  requireDir = require('require-dir'),
   gulpAutoTask = require('gulp-auto-task'),
   browsersync = require('browser-sync'),
   watch = require('gulp-watch'),

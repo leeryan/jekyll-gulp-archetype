@@ -1,4 +1,4 @@
-var gulp = reqiuire ('gulp'),
+var gulp = require ('gulp'),
 
     /** Utilities **/
     rename = require('gulp-rename'),

@@ -2,7 +2,7 @@ var gulp = require('gulp'),
 
     /** Utilities **/
     rename = require('gulp-rename'),
-    size = require('gulp-size')
+    size = require('gulp-filesize')
 
     /** JS **/
     jshint = require('gulp-jshint'),
@@ -22,7 +22,7 @@ module.exports = function buildJs(){
         .pipe(concat('vendor.js'))
         //Minify combined file and rename
         .pipe(uglify())
-        .pipe(rename({extname: '.min.js'}))
+        .pipe(rename({ extname: '.min.js' }))
         .pipe(size())
         .pipe(gulp.dest(paths.vendor.dest));
 
@@ -34,7 +34,7 @@ module.exports = function buildJs(){
         .pipe(jshint.reporter('default'))
         //Minify files and rename
         .pipe(uglify())
-        .pipe(rename(extname: '.min.js'))
+        .pipe(rename({extname: '.min.js' }))
         .pipe(size())
         .pipe(gulp.dest(paths.js.dest));
 };

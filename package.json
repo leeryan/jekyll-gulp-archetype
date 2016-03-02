@@ -33,7 +33,7 @@
     "gulp-watch": "^4.3.5",
     "imagemin-pngquant": "^4.2.2",
     "jshint": "^2.9.1",
-    "requiredir": "^1.0.7",
+    "require-dir": "^0.3.0",
     "run-sequence": "^1.1.5"
   },
   "paths": {

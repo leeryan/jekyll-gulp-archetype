@@ -5,7 +5,7 @@ var gulp = require('gulp'),
     pngquant = require('imagemin-pngquant'),
 
     /** Config **/
-    paths = require('../packge.json').paths;
+    paths = require('../package.json').paths;
 
 module.exports = function optimizeImg() {
         return gulp.src([paths.img.src + '*', paths.img.src + '**/*'])
