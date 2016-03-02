@@ -1,0 +1,54 @@
+{
+  "name": "play",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://leeryan@github.com/leeryan/play.git"
+  },
+  "author": "Lee Ryan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/leeryan/play/issues"
+  },
+  "homepage": "https://github.com/leeryan/play#readme",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-auto-task": "0.0.1",
+    "gulp-autoprefixer": "^3.1.0",
+    "gulp-filesize": "0.0.6",
+    "gulp-minify-css": "^1.2.4",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^2.2.0",
+    "requiredir": "^1.0.7"
+  },
+  "paths": {
+    "tasks": "gulp-tasks/",
+    "src": "play/",
+    "build": "_dist/",
+    "bower": "bower_components/",
+    "vendor": {
+      "src": "play/js/lib/",
+      "dest": "_dist/js/"
+    },
+    "js": {
+      "src": "play/js/",
+      "dest": "_dist/js/"
+    },
+    "sass": {
+      "src": "play/_sass/"
+    },
+    "css": {
+      "src": "play/css/",
+      "dest": "_dist/css/"
+    },
+    "img": {
+      "src": "play/img/",
+      "dest": "_dist/img/"
+    }
+  }
+}
