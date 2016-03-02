@@ -4,6 +4,8 @@ var gulp = require ('gulp'),
   requiredir = require('requiredir'),
   gulpAutoTask = require('gulp-auto-task'),
   browsersync = require('browser-sync'),
+  watch = require('gulp-watch'),
+  runSequence = require('run-sequence'),
 
   /** Config **/
   paths = require('./package.json').paths;
@@ -41,4 +43,51 @@ gulp.task('browser', function(){
 //Force reload across all devices
 gulp.task('browser:reload', function(){
   browserSync.reload();
+});
+
+/** Main build **/
+gulp.task('serve', ['browser'], function(){
+    runSequence('build', ['build:assets']);
+
+    //SCSS/CSS
+    watch([
+        paths.src + 'fonts/*',
+        paths.sass.src + '*.scss',
+        paths.css.src + 'main.css',
+        paths.sass.src + '**/*.scss'
+    ], function(){
+        runSequence('buildCss', ['browser:reload']);
+    });
+
+    //JS
+    watch([paths.js.src + '*.js', paths.vendor.src + '*.js'], function(){
+        runSequence('buildJs', ['browser:reload']);
+    });
+
+    //Images
+    watch([paths.img.src + '*', paths.img.src + '**/*'], function(){
+        runSequence('optimizeImg', ['browser:reload']);
+    });
+
+    //Markup, posts, data
+    watch([
+        paths.src +'*',
+        paths.src +'_data/*',
+        paths.src +'_plugins/*',
+        paths.src +'**/*.md',
+        paths.src +'**/*.html',
+        paths.src +'**/*.markdown',
+        paths.src +'_includes/**/*.md',
+        paths.src +'_includes/**/*.svg',
+        paths.src +'_includes/**/*.html',
+    ], function(){
+        runSequence('build', ['build:assets', 'browser:reload']);
+    });
+
+    gutil.log('Watching for changes...');
+
+});
+
+gulp.task('deploy', function(){
+    runSequence('build:prod', ['build:assets']);
 });
