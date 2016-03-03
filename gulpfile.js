@@ -3,7 +3,7 @@ var gulp = require ('gulp'),
   /** Utils **/
   requireDir = require('require-dir'),
   gulpAutoTask = require('gulp-auto-task'),
-  browsersync = require('browser-sync'),
+  browserSync = require('browser-sync'),
   watch = require('gulp-watch'),
   runSequence = require('run-sequence'),
 
