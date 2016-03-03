@@ -24,11 +24,11 @@ gulpAutoTask('{*,**/*}.js', {
 
 /** Helper tasks **/
 gulp.task('build', function(callback){
-    return utils.buildJekyll('callback', 'serve');
+    return utils.buildJekyll(callback, 'serve');
 });
 
 gulp.task('build:prod', function(callback){
-    return utils.buildJekyll('callback', 'prod');
+    return utils.buildJekyll(callback, 'prod');
 });
 
 gulp.task('build:assets', ['buildCss', 'buildJs', 'optimizeImg']);

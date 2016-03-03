@@ -12,6 +12,7 @@ module.exports = function buildJekyll(callback, env){
 
         // https://nodejs.org/api/child_process.html#child_process_child_process_exec_command_options_callback
         return exec(cmd, function(error, stdout, stderror){
+
             gutil.log(stdout) // Log the output to the console
             return callback(error !== null ? 'ERROR: Jekyll process exited with code: ' + error.code : null);
         })
