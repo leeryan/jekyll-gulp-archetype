@@ -38,26 +38,26 @@
   },
   "paths": {
     "tasks": "gulp-tasks/",
-    "src": "project/",
+    "src": "app/",
     "build": "_site/",
     "bower": "bower_components/",
     "vendor": {
-      "src": "project/js/lib/",
+      "src": "app/js/lib/",
       "dest": "_site/js/"
     },
     "js": {
-      "src": "project/js/",
+      "src": "app/js/",
       "dest": "_site/js/"
     },
     "sass": {
-      "src": "project/_sass/"
+      "src": "app/_sass/"
     },
     "css": {
-      "src": "project/css/",
+      "src": "app/css/",
       "dest": "_site/css/"
     },
     "img": {
-      "src": "project/img/",
+      "src": "app/img/",
       "dest": "_site/img/"
     }
   }

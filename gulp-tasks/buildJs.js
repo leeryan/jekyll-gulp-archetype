@@ -2,7 +2,8 @@ var gulp = require('gulp'),
 
     /** Utilities **/
     rename = require('gulp-rename'),
-    size = require('gulp-filesize')
+    size = require('gulp-filesize'),
+    gutil = require('gulp-util'),
 
     /** JS **/
     jshint = require('gulp-jshint'),
@@ -16,6 +17,8 @@ var gulp = require('gulp'),
 
 module.exports = function buildJs(){
 
+    gutil.log('start BUILD');
+
     //Build vendor files
     gulp.src(paths.vendor.src + '*.js')
     //Concat files
@@ -25,6 +28,8 @@ module.exports = function buildJs(){
         .pipe(rename({ extname: '.min.js' }))
         .pipe(size())
         .pipe(gulp.dest(paths.vendor.dest));
+
+        gutil.log(paths.vendor.src);
 
     return gulp.src(paths.js.src + '*.js')
     //Concat files
