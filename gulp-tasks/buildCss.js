@@ -22,7 +22,7 @@ module.exports = function buildCss(){
             browsers: ['last 2 versions']
         }))
         .pipe(minifyCss())
-        .pipe(remane({extname: '.min.css'}))
+        .pipe(rename({extname: '.min.css'}))
         .pipe(size()) // Logs minified size to the console
         .pipe(gulp.dest(paths.css.dest));
 };
