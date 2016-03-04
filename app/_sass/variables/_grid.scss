@@ -1,0 +1,22 @@
+// Grid & Grid Spacing // --------------------------------------------------
+
+// Content widths
+$max-content-width: none;
+
+// Component padding
+$inner-padding: 15px;
+$inner-padding-small: 10px;
+
+// Overall spacing used for spacing around modules
+$horizontal-spacing: 20px;
+
+// Vertical rhythm
+$vertical-spacing: 35px;
+$vertical-spacing-around-text: 30px; // adjustment to fit the visual specs
+
+// Grids
+//@include add-gutter(1 / 3); // Gutter width is dynamic at 1/3 of a column.
+//@include add-grid(12); // Always have a 12 column grid
+
+// Constrained max width
+$constrained-width: 1280px;

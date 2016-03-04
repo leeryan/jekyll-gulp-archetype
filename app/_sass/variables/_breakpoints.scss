@@ -1,0 +1,70 @@
+///
+/// Grid variables used throughtout the project, adapted to work with Breakpoint
+///
+
+// Ranges // --------------------------------------------------
+///
+/// Small range in ems (0 - 599px)
+/// @type {String}
+///
+$small-range: 0 37.4375em;
+///
+/// Medium range in ems (600px - 959px)
+/// @type {String}
+///
+$medium-range: 37.5em 59.9375em;
+///
+/// Large range in ems (960px+)
+/// @type {String}
+///
+$large-range: 60em;
+
+// Orientation // --------------------------------------------------
+$screen: 'only screen';
+
+///
+/// Target only landscape devices
+/// @type {String}
+///
+$landscape: $screen (orientation landscape);
+///
+/// Target only portrait devices
+/// @type {String}
+///
+$portrait: $screen (orientation portrait);
+
+// Target only // --------------------------------------------------
+///
+/// Target only small devices
+/// @type {String}
+///
+$small-only: $screen $small-range;
+///
+/// Target only medium devices
+/// @type {String}
+///
+$medium-only: $screen $medium-range;
+///
+/// Target only large devices
+/// @type {String}
+///
+$large-only: $screen $large-range;
+
+// Edge-cases // --------------------------------------------------
+///
+/// Target small & medium devices
+/// @type {String}
+///
+$small-medium-only: $screen lower-bound($small-range) upper-bound($medium-range);
+
+// Target up // --------------------------------------------------
+///
+/// Target medium up devices
+/// @type {String}
+///
+$medium-up: $screen lower-bound($medium-range);
+///
+/// Target large up devices
+/// @type {String}
+///
+$large-up: $screen lower-bound($large-range);

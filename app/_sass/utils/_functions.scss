@@ -1,0 +1,256 @@
+// Functions // --------------------------------------------------
+
+///
+/// Find the lower bound from a range of numbers.
+///
+/// @author Zurb Foundation
+/// @group maths
+///
+/// @param  {Number} $range - Range of numbers.
+/// @return {Number} Returns the lowest number in the range.
+/// @example scss
+/// lower-bound(40.063em 63em)
+/// // 40.063em
+///
+/// @link https://github.com/zurb/foundation/blob/master/scss/foundation/_functions.scss
+///
+@function lower-bound($range) {
+  @if length($range) <= 0 {
+    @return 0;
+  }
+  @return nth($range, 1);
+}
+
+///
+/// Find the upper bound from a range of numbers.
+///
+/// @author Zurb Foundation
+/// @group maths
+///
+/// @param  {Number} $range - Range of numbers.
+/// @return {Number} Returns the highest number in the range.
+/// @example scss
+/// upper-bound(40.063em 63em)
+/// // 63em
+///
+/// @link https://github.com/zurb/foundation/blob/master/scss/foundation/_functions.scss
+///
+@function upper-bound($range) {
+  @if length($range) < 2 {
+    @return 999999999999;
+  }
+  @return nth($range, 2);
+}
+
+///
+/// Strips the the unit of measure from a value (not to be used directly).
+///
+/// @author Zurb Foundation
+/// @group string manipulation
+///
+/// @param  {Length} $value - Number you wish to remove the unit from.
+/// @return {Number} Returns the number without a unit.
+/// @example scss
+/// strip-unit(40.063em)
+/// // 40.063
+///
+/// @link https://github.com/zurb/foundation/blob/master/scss/foundation/_functions.scss
+///
+@function _strip-unit($value) {
+  @return $value / ($value * 0 + 1);
+}
+
+///
+/// Converts a pixel value to rem values (not to be used directly).
+///
+/// @author Zurb Foundation
+/// @group unit conversion
+///
+/// @param  {Length} $value - Pixel value to be converted to rem, works with or without 'px'.
+/// @param {Length} $base-value [$rem-base] - The rem base unit we are working to.
+/// @return {Length} Returns the value in rem units.
+///
+/// @requires {Function} _strip-unit
+/// @example scss
+/// convert-to-rem(8px, 16px)
+/// // 0.5rem
+///
+/// @link https://github.com/zurb/foundation/blob/master/scss/foundation/_functions.scss
+///
+@function _convert-to-rem($value, $base-value: $rem-base) {
+  $value: _strip-unit($value) / _strip-unit($base-value) * 1rem;
+  @if ($value == 0rem) { $value: 0; } // Turn 0rem into 0
+  @return $value;
+}
+
+///
+/// New Syntax, allows to optionally calculate on a different base value to counter compounding effect of rem's.
+/// Call with 1, 2, 3 or 4 parameters, 'px' is not required but supported.
+/// NOTE: This function does not have a pixel fallback, so won't work in IE8 and below.
+///
+/// @author Zurb Foundation
+/// @group unit conversion
+///
+/// @param  {Length} $values Value, or set of values you want converted to rems.
+/// @param {Length} $base-value [$rem-base] - The rem base unit we are working to.
+/// @return {Length} Returns a value, or set of values converted to rems.
+///
+/// @requires {Function} _convert-to-rem
+/// @example scss
+/// rem-calc(10 20 30px 40);
+/// @example scss
+/// rem-calc((10, 20, 30, 40px));
+/// @example scss
+/// rem-calc(16px 32px 48px, 8px);
+/// @example scss
+/// rem-calc((16px, 32px, 48), 8px);
+///
+/// @link https://github.com/zurb/foundation/blob/master/scss/foundation/_functions.scss
+///
+@function rem-calc($values, $base-value: $rem-base) {
+  $max: length($values);
+
+  @if $max == 1 { @return _convert-to-rem(nth($values, 1), $base-value); }
+
+  $rem-values: ();
+  @for $i from 1 through $max {
+    $rem-values: append($rem-values, _convert-to-rem(nth($values, $i), $base-value));
+  }
+  @return $rem-values;
+}
+
+/// Lighten a color (mix with white)
+/// @access public
+/// @param {Color} $color - color to tint
+/// @param {Number} $percentage - percentage of `$color` in returned color
+/// @return {Color}
+@function tint($color, $percentage) {
+    @return mix($color, white, $percentage);
+}
+
+///
+/// Darken a colour based on a percentage value. This function uses mix()
+/// rather than darken which produces more predictable results.
+/// @group color manipulation
+///
+/// @param {Color} $color - color to shade.
+/// @param {Number} $percentage - percentage of `$color` in returned color.
+/// @return {Color} Returns a new colour.
+///
+/// @example scss
+/// shade(#ff0000, 10%);
+///
+@function shade($color, $percentage) {
+  @return mix($color, black, $percentage);
+}
+
+///
+/// Return a requested feature from the font map (not to be used directly).
+/// @author Robin Rendle
+/// @group typography
+///
+/// @param {String} $family - the font family you need information from.
+/// @param {String} $set - the set of values you are looking for.
+/// @param {String} $feature - the feature you require.
+/// @return {Number} Requested number from font map.
+///
+/// @example scss
+/// _fontset-feature($font-georgia, base, font-size);
+///
+/// @link http://erskinedesign.com/blog/setting-typographic-scale-with-sass-maps/
+///
+@function _fontset-feature($family, $set, $feature){
+    $font-set: map-get($family, $set);
+    $set-feature: map-get($font-set, $feature);
+    @return $set-feature;
+}
+
+///
+/// Calculate the pixel size from the font map (can be used directly)
+/// @author Robin Rendle
+/// @group typography
+///
+/// @requires {Function} _fontset-feature
+///
+/// @param {String} $family - the font family you need information from
+/// @param {String} $set - the set of values you are looking for
+/// @return {Number} Requested font size in pixels.
+///
+/// @example scss
+/// calc-px-font-size($font-georgia, base)
+///
+/// @link http://erskinedesign.com/blog/setting-typographic-scale-with-sass-maps/
+///
+@function calc-px-font-size($family, $set) {
+    $font-size: _fontset-feature($family, $set, font-size);
+    @return($font-size * 1px);
+}
+
+///
+/// Calculate the rem size from the font map (can be used directly),
+/// Requires a $rem-base size to be set in the variables (usually 16)
+/// @author Robin Rendle
+/// @group typography
+///
+/// @requires {Function} _fontset-feature
+///
+/// @param {String} $family - the font family you need information from.
+/// @param {String} $set - the set of values you are looking for.
+/// @return {Number} Requested font size in rems.
+///
+/// @example scss
+/// calc-rem-font-size($font-georgia, base)
+///
+/// @link http://erskinedesign.com/blog/setting-typographic-scale-with-sass-maps/
+///
+@function calc-rem-font-size($family, $set) {
+    @if $rem-base != null {
+        $px-size: _fontset-feature($family, $set, font-size);
+        $rem-size: $px-size / $rem-base;
+
+        @return($rem-size * 1rem);
+    } @else {
+        @error "$rem-base variable is not set."
+    }
+}
+
+///
+/// Calculate the unitless line-height for a given font / font-size.
+/// @author Robin Rendle
+/// @group typography
+///
+/// @requires {Function} _fontset-feature
+///
+/// @param {String} $family - the font family you need information from.
+/// @param {String} $set - the set of values you are looking for.
+/// @return {Number} Unitless line-height.
+///
+/// @example scss
+/// calc-line-height($font-georgia, base)
+///
+/// @link http://erskinedesign.com/blog/setting-typographic-scale-with-sass-maps/
+///
+@function calc-line-height($family, $set) {
+    $line-height: _fontset-feature($family, $set, line-height);
+    $font-size: _fontset-feature($family, $set, font-size);
+
+    @return($line-height / $font-size);
+}
+
+///
+/// Return the font stack for a given font map (not to be used directly).
+/// @author Robin Rendle
+/// @group typography
+///
+/// @param {String} $family - the font family you need information from.
+/// @return {String} Font stack of the requested font.
+///
+/// @example scss
+/// _fontset-family($font-georgia)
+///
+/// @link http://erskinedesign.com/blog/setting-typographic-scale-with-sass-maps/
+///
+@function _fontset-family($family) {
+    $result: map-get($family, stack);
+    @return unquote($result);
+}

@@ -1,0 +1,644 @@
+// Mixins // --------------------------------------------------
+
+///
+/// Simple mixin to set elements box-sizing across all browsers.
+///
+/// @group element layout
+///
+/// @output Default version of box-sizing property, browser prefix added by grunt-autoprefixer.
+///
+/// @example scss
+/// include box-sizing();
+///
+@mixin box-sizing() {
+    box-sizing: border-box;
+}
+
+///
+/// A small mixin for easy use of rem with px as fallback.
+/// Modern browsers will see rem values, IE8 will see px values.
+///
+/// @author Eric Meyer & Christian Reinl & Matt Hobbs
+/// @group unit conversion
+///
+/// @param  {String} $property CSS property that needs rem value with px fallback.
+/// @param  {String} $values Value, or list of values for conversion.
+/// @output {String} Return property: value for both rems and pixels.
+///
+/// @example scss
+/// include x-rem(font-size, 14px);
+/// @example scss
+/// include x-rem(margin, 0 12px 2 1.2);
+/// @example scss
+/// include x-rem(padding, 1.5 24px);
+///
+/// @link https://gist.github.com/webgefrickel/4530526
+///
+@mixin x-rem($property, $values) {
+    // Create a couple of empty lists as output buffers.
+    $base-font-size: $rem-base; // should be consistent with your html/body font-size
+    $px-values: ();
+    $rem-values: ();
+
+    // Loop through the $values list
+    @each $value in $values {
+        // For each property value, if it's in rem or px, derive both rem and
+        // px values for it and add those to the end of the appropriate buffer.
+        // Ensure all pixel values are rounded to the nearest pixel.
+        @if $value == 0 or $value == 0px {
+            // 0 -- use it without a unit
+            $px-values: join($px-values, 0);
+            $rem-values: join($rem-values, 0);
+        } @else if type-of($value) == number and not unitless($value) and (unit($value) == px) {
+            // px value given - calculate rem value from base-font-size
+            $new-rem-value: _strip-unit($value) / $base-font-size;
+            $new-px-value: round($value);
+            $px-values: join($px-values, $new-px-value);
+            $rem-values: join($rem-values, #{$new-rem-value}rem);
+        } @else if type-of($value) == number and not unitless($value) and (unit($value) == '%') {
+            // % value given - don't add px or rem
+            $px-values: join($px-values, #{$value});
+            $rem-values: join($rem-values, #{$value});
+        } @else if $value == auto {
+            // auto - don't add px or rem
+            $px-values: join($px-values, auto);
+            $rem-values: join($rem-values, auto);
+        } @else {
+            // unitless value - use those directly as rem and calculate the px-fallback
+            $pixel-value: round($value * $base-font-size) * 1px;
+            $px-values: join($px-values, $pixel-value);
+            $rem-values: join($rem-values, #{$value}rem);
+        }
+    }
+
+    // output the converted rules
+    @if global-variable-exists(px-fallback) and $px-fallback == true {
+        #{$property}: $px-values;
+    } @else {
+        #{$property}: $rem-values;
+    }
+}
+
+// Helper classes // --------------------------------------------------
+
+///
+/// Hide an element from both screenreaders and browsers.
+///
+/// @author Paul Miller
+/// @group element accessibility
+///
+/// @example scss
+/// include hidden();
+///
+/// @link https://github.com/paulmillr/h5bp-helpers/blob/master/helpers.css
+/// @link http://h5bp.com/u
+///
+@mixin hidden {
+    display: none !important;
+    visibility: hidden;
+}
+
+///
+/// Hide only visually, but have it available for screenreaders.
+///
+/// @author Paul Miller
+/// @group element accessibility
+///
+/// @example scss
+/// include visually-hidden();
+///
+/// @link https://github.com/paulmillr/h5bp-helpers/blob/master/helpers.css
+/// @link http://h5bp.com/v
+///
+@mixin visually-hidden {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+
+    // Extends the .visuallyhidden class to allow the element to be focusable
+    // when navigated to via the keyboard: h5bp.com/p
+    &.focusable:active,
+    &.focusable:focus {
+        clip: auto;
+        height: auto;
+        margin: 0;
+        overflow: visible;
+        position: static;
+        width: auto;
+    }
+}
+
+///
+/// Hide visually and from screenreaders, but maintain layout.
+///
+/// @author Paul Miller
+/// @group element accessibility
+///
+/// @example scss
+/// include invisible();
+///
+/// @link https://github.com/paulmillr/h5bp-helpers/blob/master/helpers.css
+///
+@mixin invisible {
+    visibility: hidden;
+}
+
+///
+/// Easy way to vendor prefix a property.
+/// @group element css
+/// @deprecated Build now relies on grunt-autoprefixer, manual addition is no longer needed.
+///
+/// @param  {String} $name Name of the CSS property.
+/// @param  {String} $value Value of the CSS property.
+///
+/// @example scss
+/// include vendor-prefix(transform, translateY(-50%));
+///
+@mixin vendor-prefix($name, $value) {
+    @each $vendor in ('-webkit-', '-moz-', '-ms-', '-o-', '') {
+        #{$vendor}#{$name}: #{$value};
+    }
+}
+
+///
+/// Verticle align any element (works down to IE9).
+///
+/// @group element layout
+/// @example scss
+/// include vertical-align();
+///
+@mixin vertical-align {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+///
+/// Remove styling from a list element.
+///
+/// @group element layout
+/// @example scss
+/// include no-style-list();
+///
+@mixin no-style-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+///
+/// Add simple rounded styling around icon elements (download icon)
+///
+/// @param  {Number} $width [1] Border width.
+/// @param  {String} $border-color ["$light-grey"] Color of the border.
+///
+/// @group element layout
+/// @example scss
+/// include icon-border(2, $graphite);
+///
+@mixin icon-border($width: 1, $border-color: $light-grey) {
+    $width: $width * 1px;
+
+    @include x-rem(padding, 10px);
+
+    border-radius: 50%;
+    border: $width solid $border-color;
+}
+
+///
+/// Simple way to add a hover and active pseudo class to an element.
+/// @group element css
+///
+/// @example scss
+/// a {
+///  include hover-active {
+///      background: red;
+///      text-decoration: none;
+///  }
+/// }
+/// // Results in
+/// a:hover,
+/// a:active {
+///      background: red;
+///      text-decoration: none;
+/// }
+///
+@mixin hover-active() {
+    &:hover,
+    &:active {
+        @content;
+    }
+}
+
+///
+/// Simple way to add a focus and active pseudo class to an element.
+/// @group element css
+///
+/// @example scss
+/// a {
+///  include focus-active {
+///      background: red;
+///      text-decoration: none;
+///  }
+/// }
+/// // Results in
+/// a:focus,
+/// a:active {
+///      background: red;
+///      text-decoration: none;
+/// }
+///
+@mixin focus-active() {
+    &:focus,
+    &:active {
+        @content;
+    }
+}
+
+///
+/// Simple way to add a active pseudo class to an element.
+/// @group element css
+///
+/// @example scss
+/// a {
+///  include active {
+///      background: red;
+///      text-decoration: none;
+///  }
+/// }
+/// // Results in
+/// a:active {
+///      background: red;
+///      text-decoration: none;
+/// }
+///
+@mixin active() {
+    &:active {
+        @content;
+    }
+}
+
+///
+/// Easy way to include icomoon icons using a mixin.
+///
+/// @author James Shakespeare
+/// @group element css
+///
+/// @param  {String} $icon The icon to be used.
+/// @param  {String} $position ["before"] Position to place the icon using :before / :after.
+/// @param  {Boolean} $replace [false] Sets the font-size of the element’s immediate contents to 0 when true.
+///
+/// @example scss
+/// include icomoon("myIcon");
+///
+/// @link http://jshak.es/easy-icomoon-icons-with-sass/
+///
+@mixin icomoon($icon, $position: "before", $replace: false) {
+    // If we're replacing the text, set font-size to 0
+    @if $replace {
+        font-size: 0;
+    }
+
+    // Pseudo-element properties
+    &:#{$position} {
+        @extend %icon-#{$icon};
+
+        font-family: '#{$webfont-icons}';
+        speak: none;
+        font-style: normal;
+        font-weight: normal;
+        font-variant: normal;
+        text-transform: none;
+        line-height: 1;
+
+        @if $replace {
+            font-size: 1rem;
+        }
+
+        @content;
+    }
+}
+
+/// Legacy clearfix for IE8
+/// @link http://compass-style.org/reference/compass/utilities/general/clearfix/#mixin-legacy-pie-clearfix
+@mixin legacy-pie-clearfix {
+  &:after {
+    content: "\0020";
+    display: block;
+    height: 0;
+    clear: both;
+    overflow: hidden;
+    visibility: hidden;
+    //replaced the original has-layout with the simpler zoom: 1; property
+    zoom: 1;
+  }
+  //@include has-layout;
+}
+
+/// Helper to clear inner floats
+/// @author Nicolas Gallagher
+/// @link http://nicolasgallagher.com/micro-clearfix-hack/ Micro Clearfix
+@mixin clearfix {
+    &::after {
+        content: '';
+        display: table;
+        clear: both;
+    }
+}
+
+///
+/// Easily set the size / line-height of a font using a mixin. All
+/// font sizes are pre-defined in the maps in the typography variables.
+/// Standard browsers accept the rem values, fall back to px values.
+/// A font family stack will also be returned if not the default font
+/// applied to the body tag.
+///
+/// @author Robin Rendle & Matt Hobbs
+/// @group Typography
+///
+/// @param {String} size - size of the font.
+/// @param {String} $font-family - Optional: family of the font that is required.
+///
+/// @requires {Function} calc-px-font-size
+/// @requires {Function} calc-rem-font-size
+/// @requires {Function} calc-line-height
+/// @requires {Function} _fontset-family
+///
+/// @example scss
+/// include font-scale(large, $font-georgia);
+///
+/// @link http://erskinedesign.com/blog/setting-typographic-scale-with-sass-maps/
+///
+@mixin font-scale ($font-size, $family:$font-default, $line-height:$font-size) {
+    @if global-variable-exists(px-fallback) and $px-fallback == true {
+        font-size: calc-px-font-size($family, $font-size);
+    } @else {
+        font-size: calc-rem-font-size($family, $font-size);
+    }
+
+    line-height: calc-line-height($family, $line-height);
+
+    @if $family != $font-default {
+        font-family: _fontset-family($family);
+    }
+}
+
+///
+/// Sass mixin for generating button styles using the BEM syntax.
+/// I've added detailed comments as there's quite a lot happening.
+/// @author Hugo Giraudel
+///
+/// @param {Color} $color - color button to be generated
+///
+/// @link http://hugogiraudel.com/2014/03/03/another-sass-button-library/
+///
+@mixin button-color($color) {
+    // By default everything is fine when the mixin is run.
+    $everything-okay: true;
+
+    // Check to see if the $color variable supplied is a valid color.
+    // Tell the user if not.
+    @if type-of($color) != color {
+        @warn "`#{$color}` is not a color for `button-color`";
+
+        $everything-okay: false;
+    }
+
+    // Check that $btn-hover and $btn-border have 2 parameters (see variables).
+    // Tell the user if not
+    @if length($btn-hover)  != 2 or length($btn-border) != 2 {
+        @warn "Both `$btn-hover` and `$btn-border` should be two items long for `button-color`.";
+
+        $everything-okay: false;
+    }
+
+    // Check that $btn-hover and $btn-border first parameter is a valid sass function. Default cases are saturate
+    // and darken. Tell the user if this isn't the case.
+    @if not function-exists(nth($btn-hover, 1)) or not function-exists(nth($btn-border, 1)) {
+        @warn "Either `#{nth($btn-hover, 1)}` or `#{nth($btn-border, 1)}` is not a valid function for `button-color`.";
+
+        $everything-okay: false;
+    }
+
+    // Check that $btn-hover and $btn-border second parameter is a number, if it isn't tell the user.
+    @if type-of(nth($btn-hover,  2)) != number or type-of(nth($btn-border, 2)) != number {
+        @warn "Either `#{nth($btn-hover, 2)}` or `#{nth($btn-border, 2)}` is not a valid percentage for `button-color`.";
+
+        $everything-okay: false;
+    }
+
+    // Assuming all checks above passed, generate the required CSS.
+    @if $everything-okay == true {
+        // Simple color taken from the variable map
+        background-color: $color; // 1
+
+        &:hover,
+        &:active {
+            // Call the 'saturate' function, on the passed $color, adjust by the set percentage
+            background: call(nth($btn-hover, 1), $color, nth($btn-hover, 2));
+        }
+
+        // Assuming a button border is required
+        @if $btn-border != false {
+            // Call the 'darken' function, on the passed $color, adjust by the set percentage
+            border-color: call(nth($btn-border, 1), $color, nth($btn-border, 2));
+        }
+    }
+}
+
+///
+/// Sass mixin to create a circular 'play' button, with an appropriate icon.
+/// Both button and icon scale appropriately across breakpoints.
+///
+/// @author Tom Bran
+///
+/// @param {Length} $dimension-small - width of play button at smallest breakpoint (mobile-first)
+/// @param {Length} $dimension-medium - width of play button above $medium-up breakpoint
+/// @param {Length} $dimension-large - width of play button above $large-up breakpoint
+///
+@mixin play-button($dimension-small: 40px, $dimension-medium: 55px, $dimension-large: 70px, $bg-color:$black, $border-color: $white, $fg-color: $white, $opacity: 0.4) {
+    $dimensions: $dimension-small;
+
+    @include x-rem(width, $dimensions);
+    @include x-rem(height, $dimensions);
+    @include icomoon('icons-10-play');
+
+    background: rgba($bg-color, $opacity);
+    border: 2px solid $border-color;
+    display: inline-block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: ($dimensions / 2) * -1;
+    margin-left: ($dimensions / 2) * -1;
+    border-radius: 50%;
+    text-decoration: none;
+
+    .lt-ie9 & {
+        background: $black;
+        opacity: 0.4;
+    }
+
+    @include hover-active() {
+        opacity: 0.6;
+    }
+
+    @include breakpoint($medium-up) {
+        $dimensions: $dimension-medium;
+
+        @include x-rem(width, $dimensions);
+        @include x-rem(height, $dimensions);
+
+        margin-top: ($dimensions / 2) * -1;
+        margin-left: ($dimensions / 2) * -1;
+    }
+
+    @include breakpoint($large-up, true) {
+        $dimensions: $dimension-large;
+
+        @include x-rem(width, $dimensions);
+        @include x-rem(height, $dimensions);
+
+        margin-top: ($dimensions / 2) * -1;
+        margin-left: ($dimensions / 2) * -1;
+    }
+
+    &:before {
+        $dimensions: 10px;
+
+        @include x-rem(height, $dimensions);
+        @include x-rem(font-size, $dimensions);
+
+        color: $fg-color;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-top: ($dimensions / 2) * -1;
+        margin-left: ($dimensions / 2) * -1;
+
+        @include breakpoint($medium-up) {
+            $dimensions: 15px;
+
+            @include x-rem(height, $dimensions);
+            @include x-rem(font-size, $dimensions);
+
+            margin-top: ($dimensions / 2) * -1;
+            margin-left: ($dimensions / 2) * -1;
+        }
+
+        @include breakpoint($large-up, true) {
+            $dimensions: 20px;
+
+            @include x-rem(height, $dimensions);
+            @include x-rem(font-size, $dimensions);
+
+            margin-top: ($dimensions / 2) * -1;
+            margin-left: ($dimensions / 2) * -1;
+        }
+    }
+}
+
+//
+/// Sass mixin to create the space necessary to host cm86 on existing components.
+/// this sets the basic global style - on a component basis, customisation will be necessary to position the placeholder correctly.
+///
+/// @author Francesco Brenci
+///
+
+// scss-lint:disable ImportantRule
+@mixin caption-holder($mob-position:relative, $breakpoint:$large-up) {
+    @include clearfix();
+
+    position: $mob-position;
+    z-index: $z-index-10;
+
+    @include breakpoint($breakpoint, true) {
+        @include x-rem(padding, 0 32px 32px 0);
+
+        @if $mob-position == relative {
+            position: absolute;
+        }
+
+        top: auto;
+        right: 0;
+        bottom: 0;
+        //!important must be used to ensure to override
+        //--highest z-index settings on each module using the caption
+        z-index: $z-index-8 !important;
+    }
+}
+// scss-lint:enable ImportantRule
+
+//
+/// Sass mixin to set a background color with opacity including non-support fallback
+///
+/// @param {Color} $bg-color - background color
+/// @param {Float} $opacity - opactity amount
+///
+/// @author Santiago Martin-Cleto
+///
+
+@mixin background-opacity-fallback($bg-color, $opacity) {
+    // scss-lint:disable DuplicateProperty
+    background: $bg-color;
+    background: rgba($bg-color, $opacity);
+    // scss-lint:enable DuplicateProperty
+}
+
+//
+/// Sass mixin to set color overlay ('before' pseudo element) to an element
+///
+/// @param {Color} $color – overlay color, defaults to '$black'
+/// @param {Float} $opacity - opacity amount, defaults to '0.6'
+///
+
+@mixin color-overlay($color: $black, $opacity: 0.6) {
+    position: relative;
+
+    &:before {
+        position: absolute;
+        content: '';
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: $color;
+        opacity: $opacity;
+    }
+}
+
+///
+/// Sass mixin to create linear gradient overlay on top of element
+///
+/// @param {Color} $color - gradient color
+/// @param {Opacity} $opacity - opacity of overlay
+///
+/// N.B. requires element to have a position of relative / absolute
+///
+
+@mixin linear-gradient-overlay($color: $white, $opacity: 0.6) {
+    &:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-image: linear-gradient(-180deg, rgba($color, 0) 50%, rgba($color , 0.81) 82%, rgba($color, 0.8) 100%);
+        opacity: $opacity;
+    }
+
+    .lt-ie9 &:before,
+    .ie9 &:before {
+        background-color: rgba($color, .65);
+    }
+
+    .lt-ie9 &:before {
+        -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+    }
+}
