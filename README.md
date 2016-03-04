@@ -1,1 +1,1 @@
-# play
+# jekyll-gulp-archetype
