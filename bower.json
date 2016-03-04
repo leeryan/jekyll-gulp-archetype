@@ -16,7 +16,8 @@
     "tests"
   ],
   "dependencies": {
-    "normalize-scss": "^3.0.3"
+    "normalize-scss": "^3.0.3",
+    "singularity": "singularitygs#^1.7.0"
   },
   "devDependencies": {
     "breakpoint-sass": "^2.7.0"
