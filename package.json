@@ -50,7 +50,8 @@
       "dest": "_site/js/"
     },
     "sass": {
-      "src": "app/_sass/"
+      "src": "app/_sass/",
+      "vendor": "app/_sass/vendor/"
     },
     "css": {
       "src": "app/css/",
