@@ -31,7 +31,7 @@ gulp.task('build:prod', function(callback){
     return utils.buildJekyll(callback, 'prod');
 });
 
-gulp.task('build:assets', ['importBowerCss', 'buildCss', 'buildJs', 'optimizeImg']);
+gulp.task('build:assets', ['buildCss', 'buildJs', 'optimizeImg']);
 
 /** Browser sync **/
 //Init server to build directory

@@ -2,7 +2,8 @@
 
 // Sass base includes
 
-@import 'vendor/normalize'
+@import '../../bower_components/normalize-scss/normalize.scss',
+        '../../bower_components/breakpoint-sass/stylesheets/breakpoint';
 
 @import 'global';
 
